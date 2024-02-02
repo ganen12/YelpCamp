@@ -1,0 +1,59 @@
+<% layout("layouts/boilerplate") %>
+<div class="mb-2">
+    <p class="mb-2">Campgrounds/</p>
+    <a class=" btn btn-outline-warning" href="/campgrounds"><span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+      </svg></span></a>
+</div>
+
+<div class="row mb-5" style="justify-content: center;">
+    <h1 class="text-center">Add New Campground</h1>
+    <div class="col-6" style="width: 700px;">
+        <form action="/campgrounds" method="post" novalidate class="validated-form">
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" type="text" id="title" name="campground[title]" required>
+                <div class="invalid-feedback">
+                    Include title.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="location">Location</label>
+                <input class="form-control" type="text" id="location" name="campground[location]" required>
+                <div class="invalid-feedback">
+                    Include a valid location.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="price">Price</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" min="1" id="price" class="form-control" name="campground[price]" placeholder="0.00" aria-label="Price" aria-describedby="basic-addon1" required>
+                    <div class="invalid-feedback">
+                        Include a valid price.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label" for="iamge">Image URL</label>
+                <input class="form-control" type="text" id="image" name="campground[image]" required>
+                <div class="invalid-feedback">
+                    Include an image.
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label" for="description" >Description</label>
+                <textarea class="form-control" id="description" name="campground[description]" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-warning">Add Campground</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+   
+
+    
