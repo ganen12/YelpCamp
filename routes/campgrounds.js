@@ -3,7 +3,7 @@ const router = express.Router();
 const ExpressError = require("../utilities/ExpressError")
 const catchAsync = require("../utilities/catchAsync");
 const Campground = require("../models/campground");
-const {validateCampground, validateReview} = require("../models/validationSchema")
+const {validateCampground, validateReview, requiredLogin} = require("../models/validationSchema")
 
 // read campgrounds
 router.get("/", catchAsync(async (req, res) => {
@@ -11,12 +11,12 @@ router.get("/", catchAsync(async (req, res) => {
     res.render("campgrounds/index.ejs", {allCampgrounds})
 }))
 
-router.get("/new", (req, res) => {
+router.get("/new", requiredLogin, (req, res) => {
     res.render("campgrounds/new.ejs")
 })
 
 // create campground
-router.post("/", validateCampground, catchAsync(async (req, res, next) => {
+router.post("/", requiredLogin, validateCampground, catchAsync(async (req, res, next) => {
     // if(!req.body.campground) throw new ExpressError("Invalid Campground Data", 400);
     const campground = await Campground.create(req.body.campground);
     req.flash("success", "Created new campground!")
@@ -34,19 +34,17 @@ router.get("/:id", catchAsync(async (req, res, next) => {
     res.render("campgrounds/details.ejs", {campground, messages: req.flash("success")})
 }))
 
-router.get("/:id/edit", catchAsync(async (req, res, next) => {
+router.get("/:id/edit", requiredLogin, catchAsync(async (req, res, next) => {
     const {id} = req.params
     const campground = await Campground.findById(id)
     if (!campground) {
-        // req.flash("error", "Campground not found!")
-        // return res.redirect("/campgrounds");
         return next(new ExpressError("Campground not found!. Might have been deleted", 404))
     }
     res.render("campgrounds/edit.ejs", {campground})
 }))
 
 // update campground
-router.put("/:id", validateCampground, catchAsync(async (req,res) => {
+router.put("/:id", requiredLogin, validateCampground, catchAsync(async (req,res) => {
     const {id} = req.params;
     // the spread operator spreads it into separate object -> req.body.campground.title and req.body.campground.location 
     const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground}, {runValidators: true})
@@ -55,7 +53,7 @@ router.put("/:id", validateCampground, catchAsync(async (req,res) => {
 }))
 
 // delete campground
-router.delete("/:id", catchAsync(async (req, res) => {
+router.delete("/:id", requiredLogin, catchAsync(async (req, res) => {
     const {id} = req.params;
     const campground = await Campground.findByIdAndDelete(id)
     console.log("deleted", campground)

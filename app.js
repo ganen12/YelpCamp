@@ -8,12 +8,15 @@ const flash = require("connect-flash");
 const path = require("path");
 const Campground = require("./models/campground");
 const {validateCampground, validateReview} = require("./models/validationSchema")
-const cities = require("./seeds/cities")
 const catchAsync = require("./utilities/catchAsync");
 const ExpressError = require("./utilities/ExpressError")
 const methodOverride = require("method-override")
 const Review = require("./models/review");
+const User = require("./models/user");
 const campgroundRoutes = require("./routes/campgrounds");
+const userRoutes = require("./routes/users");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
 
 mongoose.connect('mongodb://127.0.0.1:27017/terra-camp')
     .then(() => {
@@ -48,9 +51,15 @@ app.use((req, res, next) => {
     res.locals.error = req.flash("error");
     next();
 })
+app.use(passport.initialize());
+app.use(passport.session()); // sessions from Passport
+
+passport.use(new LocalStrategy(User.authenticate())); // this tells passport to use a strategy for authentication and store it as a method in the User Model
+passport.serializeUser(User.serializeUser()); // this makes a static method for User Model to store data in session 
+passport.deserializeUser(User.deserializeUser()); // this makes a static method to unstore data in session 
 
 app.use("/campgrounds", campgroundRoutes); // structuring better routing by separating it into different files (recommended)
-
+app.use(userRoutes);
 
 // delete a campground review
 app.delete("/campgrounds/:campID/reviews/:revID", catchAsync(async (req, res ) => {

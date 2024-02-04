@@ -16,7 +16,7 @@ const campgroundSchema = new Schema({
     ]
 });
 
-// delete middleware
+// deletion middleware
 // the parameter takes what was deleted
 campgroundSchema.post("findOneAndDelete", async function(data) {
     if(data) {
