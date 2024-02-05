@@ -12,7 +12,7 @@ router.delete("/:campID/reviews/:revID", catchAsync(async (req, res ) => {
     // this removes the id reference in campground.reviews first, and then delete the review from the separated collection
     const campground = await Campground.findByIdAndUpdate(campID, {$pull: {reviews: revID}}) // deletes the reviews._id reference
     const review = await Review.findByIdAndDelete(revID)
-    console.log("DELETED", review, campground)
+    console.log(`DELETED, ${review}, from: ${campground.title}`)
     res.redirect(`/campgrounds/${campID}`)
 }))
 

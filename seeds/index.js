@@ -27,9 +27,10 @@ const seedDB = async () => {
             await Campground.create({
                 location: `${cities[rand500].city}, ${cities[rand500].state}`,
                 title: `${descriptors[rand(descriptors.length)]} ${places[rand(places.length)]}`,
-                price: `$${rand(20) + 10}`,
+                price: `${rand(20) + 10}`,
                 image: await "https://images.unsplash.com/photo-1518602164578-cd0074062767?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quo laborum sequi quae expedita. Illum earum voluptatem obcaecati quaerat quibusdam quisquam quidem, doloribus, tenetur praesentium sequi illo placeat. Ratione, fugiat adipisci!"
+                description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quo laborum sequi quae expedita. Illum earum voluptatem obcaecati quaerat quibusdam quisquam quidem, doloribus, tenetur praesentium sequi illo placeat. Ratione, fugiat adipisci!",
+                author: "65bf3c3011d0173e19d3e9e5" 
             })
         }
         

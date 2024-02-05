@@ -20,6 +20,7 @@
             <ul class="list-group list-group-flush border border-0 border-top">
                 <li class="list-group-item text-muted border border-0"><%= campground.location %></li>
                 <li class="list-group-item text-muted border border-0">$<%= campground.price %>/night</li>
+                <li class="list-group-item text-muted border border-0">Created by: <%= campground.author.username %></li>
             </ul>
             <div class="card-body">
                 <a class="btn btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit Campground</a>
