@@ -40,8 +40,17 @@ const validateReview = (req, res, next) => {
 
 const requiredLogin = (req, res, next) => {
     if (!req.isAuthenticated()) {
+        req.session.returnTo = req.originalUrl;
         req.flash("error", "You must be signed in first.")
         return res.redirect("/login")
+    }
+    next()
+}
+
+// adds returnTo session data that contains previous URL to res locals variable
+const storeReturnTo = (req, res, next) => {
+    if (req.session.returnTo) { // if there is a previous url before forced to login, store that previous url info to locals
+        res.locals.returnTo = req.session.returnTo 
     }
     next()
 }
@@ -49,5 +58,6 @@ const requiredLogin = (req, res, next) => {
 module.exports = {
     validateCampground,
     validateReview,
-    requiredLogin
+    requiredLogin,
+    storeReturnTo
 }

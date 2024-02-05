@@ -18,8 +18,8 @@ router.delete("/:campID/reviews/:revID", catchAsync(async (req, res ) => {
 
 // create a campground review
 router.post("/:campID/reviews/", validateReview, catchAsync(async (req, res) => { 
-    const {id} = req.params;
-    const campground = await Campground.findById(id)
+    const {campID} = req.params;
+    const campground = await Campground.findById(campID)
     const review = new Review(req.body.review)
     campground.reviews.push(review)
     await review.save()
@@ -27,4 +27,4 @@ router.post("/:campID/reviews/", validateReview, catchAsync(async (req, res) => 
     res.redirect(`/campgrounds/${campground._id}`)
 }))
 
-// module.exports = router;
+module.exports = router;

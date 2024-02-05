@@ -15,6 +15,7 @@ const Review = require("./models/review");
 const User = require("./models/user");
 const campgroundRoutes = require("./routes/campgrounds");
 const userRoutes = require("./routes/users");
+const reviewRoutes = require("./routes/reviews");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
@@ -46,11 +47,7 @@ app.use(session({ // setting up session
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }));
-app.use((req, res, next) => {
-    res.locals.success = req.flash("success"); // the success message is stored in res.locals.success
-    res.locals.error = req.flash("error");
-    next();
-})
+
 app.use(passport.initialize());
 app.use(passport.session()); // sessions from Passport
 
@@ -58,29 +55,18 @@ passport.use(new LocalStrategy(User.authenticate())); // this tells passport to 
 passport.serializeUser(User.serializeUser()); // this makes a static method for User Model to store data in session 
 passport.deserializeUser(User.deserializeUser()); // this makes a static method to unstore data in session 
 
-app.use("/campgrounds", campgroundRoutes); // structuring better routing by separating it into different files (recommended)
+// global variables to all templates
+app.use((req, res, next) => {
+    res.locals.currentUser = req.user; // Passport property to check the user session data 
+    res.locals.success = req.flash("success"); // the success message is stored in res.locals.success
+    res.locals.error = req.flash("error");
+    next();
+})
+
+// structuring better routing by separating it into different files (recommended)
+app.use("/campgrounds", campgroundRoutes); 
+app.use("/campgrounds", reviewRoutes); 
 app.use(userRoutes);
-
-// delete a campground review
-app.delete("/campgrounds/:campID/reviews/:revID", catchAsync(async (req, res ) => {
-    const {campID, revID} = req.params;
-    // this removes the id reference in campground.reviews first, and then delete the review from the separated collection
-    const campground = await Campground.findByIdAndUpdate(campID, {$pull: {reviews: revID}}) // deletes the reviews._id reference
-    const review = await Review.findByIdAndDelete(revID)
-    console.log("DELETED", review)
-    res.redirect(`/campgrounds/${campID}`)
-}))
-
-// create a campground review
-app.post("/campgrounds/:id/reviews", validateReview, catchAsync(async (req, res) => { 
-    const {id} = req.params;
-    const campground = await Campground.findById(id)
-    const review = new Review(req.body.review)
-    campground.reviews.push(review)
-    await review.save()
-    await campground.save()
-    res.redirect(`/campgrounds/${campground._id}`)
-}))
 
 
 app.all("*", (req, res, next) => {

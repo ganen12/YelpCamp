@@ -7,6 +7,7 @@ const {validateCampground, validateReview, requiredLogin} = require("../models/v
 
 // read campgrounds
 router.get("/", catchAsync(async (req, res) => {
+    console.log(req.user)
     const allCampgrounds = await Campground.find({})
     res.render("campgrounds/index.ejs", {allCampgrounds})
 }))
