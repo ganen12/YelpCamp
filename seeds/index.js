@@ -39,8 +39,8 @@ const seedDB = async () => {
     }
 }
 
-seedDB()
-    .then(() => {
-        mongoose.connection.close();
-        console.log("Connection Closed!")
-    })
+// seedDB()
+//     .then(() => {
+//         mongoose.connection.close();
+//         console.log("Connection Closed!")
+//     })
