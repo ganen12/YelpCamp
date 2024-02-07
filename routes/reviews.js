@@ -3,8 +3,13 @@ const router = express.Router({mergeParams: true}); // merge params so that ever
 const ExpressError = require("../utilities/ExpressError")
 const catchAsync = require("../utilities/catchAsync");
 const Campground = require("../models/campground");
-const {validateCampground, validateReview} = require("../models/validationSchema")
+const {validateCampground, validateReview, requiredLogin} = require("../models/validationSchema")
 const Review = require("../models/review");
+
+router.get("/:campID/reviews", (req, res) => {
+    const {campID} = req.params;
+    res.redirect(`/campgrounds/${campID}`)
+})
 
 // delete a campground review
 router.delete("/:campID/reviews/:revID", catchAsync(async (req, res ) => {
@@ -17,10 +22,11 @@ router.delete("/:campID/reviews/:revID", catchAsync(async (req, res ) => {
 }))
 
 // create a campground review
-router.post("/:campID/reviews/", validateReview, catchAsync(async (req, res) => { 
+router.post("/:campID/reviews/", requiredLogin, validateReview, catchAsync(async (req, res) => { 
     const {campID} = req.params;
     const campground = await Campground.findById(campID)
     const review = new Review(req.body.review)
+    review.author = req.user._id
     campground.reviews.push(review)
     await review.save()
     await campground.save()

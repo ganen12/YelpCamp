@@ -56,6 +56,7 @@ const storeReturnTo = (req, res, next) => {
     next()
 }
 
+// middleware to prevent editing from URL path manually or through API
 const isAuthor = async (req, res, next) => {
     const {id} = req.params
     const campground = await Campground.findById(id);

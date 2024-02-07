@@ -55,8 +55,20 @@ passport.use(new LocalStrategy(User.authenticate())); // this tells passport to 
 passport.serializeUser(User.serializeUser()); // this makes a static method for User Model to store data in session 
 passport.deserializeUser(User.deserializeUser()); // this makes a static method to unstore data in session 
 
-// global variables to all templates
-app.use((req, res, next) => {
+// global variables available to all
+app.use((req, res, next) => {        
+
+    res.locals.origin = req.path;
+    if (res.locals.origin === "/") { // if signed up from homepage
+        res.locals.origin = "/campgrounds"
+    }
+    // this is confusing but at least it works
+    if (res.locals.origin === "/login" || res.locals.origin === "/register") { 
+        console.log(res.locals.origin);
+        console.log(req.query.origin);
+        res.locals.origin = req.query.origin;
+    }
+    
     res.locals.currentUser = req.user; // Passport property to check the user session data 
     res.locals.success = req.flash("success"); // the success message is stored in res.locals.success
     res.locals.error = req.flash("error");

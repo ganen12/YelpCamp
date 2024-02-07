@@ -15,8 +15,9 @@ router.get("/register", (req, res) => {
     res.render("users/register")
 })
 
-router.post("/register", catchAsync(async (req,  res, next) => {
+router.post("/register", storeReturnTo, catchAsync(async (req,  res, next) => {
     try {
+        const redirectUrl = req.query.origin || "/campgrounds"
         const {username, email, password} = req.body;
         const user = new User({username: username, email: email}); // this adds username and email first to the Model instance
         const registeredUser = await User.register(user, password); // and then add the hashed password using static password method that was defined by Passport
@@ -25,7 +26,7 @@ router.post("/register", catchAsync(async (req,  res, next) => {
                 return next(err);
             }
             console.log(registeredUser);
-            res.redirect("/campgrounds")
+            res.redirect(redirectUrl)
         })
         
     } catch (error) {
@@ -39,7 +40,7 @@ router.get("/login", (req, res) => {
 })
 
 router.post("/login", storeReturnTo, passport.authenticate("local", {failureFlash: true, failureRedirect: "/login"}), (req, res) => {
-    const redirectUrl = res.locals.returnTo || "/campgrounds";
+    const redirectUrl = res.locals.returnTo || req.query.origin;
     delete req.session.returnTo;
     req.flash("success", "Welcome back")
     res.redirect(redirectUrl)

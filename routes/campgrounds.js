@@ -7,7 +7,6 @@ const {validateCampground, validateReview, requiredLogin, isAuthor} = require(".
 
 // read campgrounds
 router.get("/", catchAsync(async (req, res) => {
-    console.log(req.user)
     const allCampgrounds = await Campground.find({})
     res.render("campgrounds/index.ejs", {allCampgrounds})
 }))
@@ -28,7 +27,9 @@ router.post("/", requiredLogin, validateCampground, catchAsync(async (req, res, 
 
 router.get("/:id", catchAsync(async (req, res, next) => {
     const {id} = req.params
-    const campground = await Campground.findById(id).populate("reviews").populate("author");
+    const campground = await Campground.findById(id)
+        .populate({path: "reviews", populate: { path: "author"}})
+        .populate("author");
     if (!campground) {
         // req.flash("error", "Campground not found!")
         // return res.redirect("/campgrounds");
