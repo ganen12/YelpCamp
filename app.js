@@ -57,25 +57,23 @@ passport.deserializeUser(User.deserializeUser()); // this makes a static method 
 
 // global variables available to all
 app.use((req, res, next) => {        
-
+    
+    // this is confusing but at least it works
     res.locals.origin = req.path;
     if (res.locals.origin === "/") { // if signed up from homepage
         res.locals.origin = "/campgrounds"
     }
-    // this is confusing but at least it works
     if (res.locals.origin === "/login" || res.locals.origin === "/register") { 
-        console.log(res.locals.origin);
-        console.log(req.query.origin);
         res.locals.origin = req.query.origin;
     }
-    
+
     res.locals.currentUser = req.user; // Passport property to check the user session data 
     res.locals.success = req.flash("success"); // the success message is stored in res.locals.success
     res.locals.error = req.flash("error");
     next();
 })
 
-// structuring better routing by separating it into different files (recommended)
+// structuring better routing by separating it into different files
 app.use("/campgrounds", campgroundRoutes); 
 app.use("/campgrounds", reviewRoutes); 
 app.use(userRoutes);

@@ -3,7 +3,7 @@ const router = express.Router({mergeParams: true}); // merge params so that ever
 const ExpressError = require("../utilities/ExpressError")
 const catchAsync = require("../utilities/catchAsync");
 const Campground = require("../models/campground");
-const {validateCampground, validateReview, requiredLogin} = require("../models/validationSchema")
+const {validateCampground, validateReview, requiredLogin, isReviewAuthor} = require("../models/validationSchema")
 const Review = require("../models/review");
 
 router.get("/:campID/reviews", (req, res) => {
@@ -12,12 +12,12 @@ router.get("/:campID/reviews", (req, res) => {
 })
 
 // delete a campground review
-router.delete("/:campID/reviews/:revID", catchAsync(async (req, res ) => {
+router.delete("/:campID/reviews/:revID", requiredLogin, isReviewAuthor, catchAsync(async (req, res ) => {
     const {campID, revID} = req.params;
     // this removes the id reference in campground.reviews first, and then delete the review from the separated collection
     const campground = await Campground.findByIdAndUpdate(campID, {$pull: {reviews: revID}}) // deletes the reviews._id reference
     const review = await Review.findByIdAndDelete(revID)
-    console.log(`DELETED, ${review}, from: ${campground.title}`)
+    console.log(`DELETED, ${review}, from: ${campground.reviews}`)
     res.redirect(`/campgrounds/${campID}`)
 }))
 

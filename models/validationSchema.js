@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const Campground = require("../models/campground");
+const Review = require("../models/review");
 
 const validateCampground = (req, res, next) => {
     const campgroundSchema = Joi.object({
@@ -67,10 +68,21 @@ const isAuthor = async (req, res, next) => {
     next();
 }
 
+const isReviewAuthor = async (req, res, next) => {
+    const {campID, revID} = req.params
+    const review = await Review.findById(revID);
+    if (!review.author._id.equals(req.user._id)) {
+        req.flash("error", "NO PERMISSION")
+        return res.redirect(`/campgrounds/${campID}`)
+    }
+    next();
+}
+
 module.exports = {
     validateCampground,
     validateReview,
     requiredLogin,
     storeReturnTo,
-    isAuthor
+    isAuthor,
+    isReviewAuthor
 }
