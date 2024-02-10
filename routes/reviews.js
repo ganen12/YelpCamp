@@ -18,7 +18,7 @@ router.delete("/:campID/reviews/:revID", requiredLogin, isReviewAuthor, catchAsy
     const campground = await Campground.findByIdAndUpdate(campID, {$pull: {reviews: revID}}) // deletes the reviews._id reference
     const review = await Review.findByIdAndDelete(revID)
     console.log(`DELETED, ${review}, from: ${campground.reviews}`)
-    res.redirect(`/campgrounds/${campID}`)
+    res.redirect(`/campgrounds/${campground._id}`)
 }))
 
 // create a campground review

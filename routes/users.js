@@ -40,7 +40,7 @@ router.get("/login", (req, res) => {
 })
 
 router.post("/login", storeReturnTo, passport.authenticate("local", {failureFlash: true, failureRedirect: "/login"}), (req, res) => {
-    const redirectUrl = res.locals.returnTo || req.query.origin;
+    const redirectUrl = res.locals.returnTo || req.query.origin; // forced to login || normal login
     delete req.session.returnTo;
     req.flash("success", "Welcome back")
     res.redirect(redirectUrl)

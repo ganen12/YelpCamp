@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
+console.log(process.env.CLOUDINARY_KEY)
+
 const express = require("express");
 const app = express();
 const mongoose = require('mongoose');
@@ -37,7 +42,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 app.use(flash())
 app.use(express.static(path.join(__dirname, "public")));
-app.use(session({ // setting up session 
+app.use(session({ // set up session 
     secret: "thisismysecret",
     resave: false,
     saveUninitialized: true,
@@ -67,7 +72,7 @@ app.use((req, res, next) => {
         res.locals.origin = req.query.origin;
     }
 
-    res.locals.currentUser = req.user; // Passport property to check the user session data 
+    res.locals.currentUser = req.user; // Passport property to store/check the user session data 
     res.locals.success = req.flash("success"); // the success message is stored in res.locals.success
     res.locals.error = req.flash("error");
     next();

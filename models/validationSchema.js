@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const Campground = require("../models/campground");
 const Review = require("../models/review");
+const ExpressError = require('../utilities/ExpressError');
 
 const validateCampground = (req, res, next) => {
     const campgroundSchema = Joi.object({
@@ -61,7 +62,7 @@ const storeReturnTo = (req, res, next) => {
 const isAuthor = async (req, res, next) => {
     const {id} = req.params
     const campground = await Campground.findById(id);
-    if (!campground.author.equals(req.user._id)) {
+    if (!campground.author._id.equals(req.user._id)) {
         req.flash("error", "NO PERMISSION")
         return res.redirect(`/campgrounds/${id}`)
     }
@@ -78,11 +79,21 @@ const isReviewAuthor = async (req, res, next) => {
     next();
 }
 
+
+const validID = (req, res, next) => {
+    const {id} = req.params
+    if (id.match(/^[0-9a-fA-F]{24}$/)) { // MongoDB id standard validation
+        return next()
+    }
+    next(new ExpressError("Campground not found! Invalid ID", 404))
+}
+
 module.exports = {
     validateCampground,
     validateReview,
     requiredLogin,
     storeReturnTo,
     isAuthor,
-    isReviewAuthor
+    isReviewAuthor,
+    validID
 }

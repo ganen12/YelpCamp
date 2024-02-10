@@ -21,7 +21,7 @@ const campgroundSchema = new Schema({
     ]
 });
 
-// deletion middleware
+// deletion middleware. Attached to the model
 // the parameter takes what was deleted
 campgroundSchema.post("findOneAndDelete", async function(data) {
     if(data) {
