@@ -13,7 +13,9 @@
     <!--<div class="row border">-->
         <div class="col-lg-6 card" style="height: min-content;">
             <h2 class="mb-3"><%= campground.title %></h2>
-            <img src="<%= campground.image %>" alt="campground image" class="card-img-top">
+            <% campground.images.forEach(image => { %>
+                <img src="<%= image.url %>" alt="campground image" class="card-img-top">
+            <% }) %>
             <div class="card-body">
                 <h5 class="card-title"><%= campground.title %></h5>
                 <p class="card-text"><%= campground.description %></p>
