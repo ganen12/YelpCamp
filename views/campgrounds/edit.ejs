@@ -10,7 +10,7 @@
     <div class="row mb-5" style="justify-content: center;">
         <h1 class="text-center">Edit Campground</h1>
         <div class="col-8" style="width: 700px;">
-            <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="post" novalidate class="validated-form">
+            <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="post" novalidate class="validated-form" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
                     <input class="form-control" type="text" id="title" name="campground[title]" value="<%= campground.title %>" required>
@@ -27,8 +27,18 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label" for="image">Image URL</label>
-                    <input class="form-control" type="text" id="image" name="campground[image]" value="<% campground.image %>" required>
+                    <label for="image" class="form-label">Add Image(s)</label>
+                    <input class="form-control" type="file" id="image" name="image" value="<% campground.image %>" multiple>
+                </div>
+                <div class="mb-3">
+                    <% campground.images.forEach((image, i) => { %>
+                        <img src="<%= image.url %>" class="img-thumbnail" alt="">
+                        <div class="form-check inline">
+                            <!-- for each iteration of images, each filename will be the value of "deleteImages[]", hence the square bracket. Filename refers to the file location in cloudinary -->
+                            <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%= image.filename %>"> 
+                            <label for="image-<%=i%>">Delete</label>
+                        </div>
+                    <% }); %>
                 </div>
                 <div class="mb-4">
                     <label class="form-label" for="description" >Description</label>

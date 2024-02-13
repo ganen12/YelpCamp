@@ -11,7 +11,8 @@ const validateCampground = (req, res, next) => {
             location: Joi.string().required(),
             // image: Joi.string().required(),
             description: Joi.string().required()
-        }).required()
+        }).required(),
+        deleteImages: Joi.array()
     })
 
     const result = campgroundSchema.validate(req.body) // this passes req.body (campground) from the form into the schema, and then validate it
@@ -34,7 +35,7 @@ const validateReview = (req, res, next) => {
 
     const result = reviewSchema.validate(req.body) 
 
-    if(result.error) { // if there is an error from validation above  
+    if(result.error) { 
         throw new ExpressError(result.error.details.map(el => el.message).join(","), 400)
     } else {
         next()
@@ -85,7 +86,7 @@ const validID = (req, res, next) => {
     if (id.match(/^[0-9a-fA-F]{24}$/)) { // MongoDB id standard validation
         return next()
     }
-    next(new ExpressError("Campground not found! Invalid ID", 404))
+    next(new ExpressError("Sorry, this page is not found! Invalid ID", 404))
 }
 
 module.exports = {

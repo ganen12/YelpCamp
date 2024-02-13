@@ -19,7 +19,7 @@ router.post("/register", storeReturnTo, catchAsync(async (req,  res, next) => {
     try {
         const redirectUrl = req.query.origin || "/campgrounds"
         const {username, email, password} = req.body;
-        const user = new User({username: username, email: email}); // this adds username and email first to the Model instance
+        const user = new User({username: username, email: email}); // this adds username and email first to the user instance
         const registeredUser = await User.register(user, password); // and then add the hashed password using static password method that was defined by Passport
         req.login(registeredUser, (err) => {
             if (err) {

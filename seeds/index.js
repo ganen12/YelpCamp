@@ -28,7 +28,16 @@ const seedDB = async () => {
                 location: `${cities[rand500].city}, ${cities[rand500].state}`,
                 title: `${descriptors[rand(descriptors.length)]} ${places[rand(places.length)]}`,
                 price: `${rand(20) + 10}`,
-                image: await "https://images.unsplash.com/photo-1518602164578-cd0074062767?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                images: [
+                    {
+                      url: 'https://res.cloudinary.com/dsdbdy97a/image/upload/v1707581407/YelpCamp/qh1ielvxmavdtxr7fxpa.jpg',
+                      filename: 'YelpCamp/qh1ielvxmavdtxr7fxpa',
+                    },
+                    {
+                      url: 'https://res.cloudinary.com/dsdbdy97a/image/upload/v1707581406/YelpCamp/cg66vgozrbsuzpxzci3e.jpg',
+                      filename: 'YelpCamp/cg66vgozrbsuzpxzci3e',
+                    }
+                  ],
                 description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quo laborum sequi quae expedita. Illum earum voluptatem obcaecati quaerat quibusdam quisquam quidem, doloribus, tenetur praesentium sequi illo placeat. Ratione, fugiat adipisci!",
                 author: "65bf3c3011d0173e19d3e9e5" 
             })
@@ -39,8 +48,8 @@ const seedDB = async () => {
     }
 }
 
-// seedDB()
-//     .then(() => {
-//         mongoose.connection.close();
-//         console.log("Connection Closed!")
-//     })
+seedDB()
+    .then(() => {
+        mongoose.connection.close();
+        console.log("Connection Closed!")
+    })

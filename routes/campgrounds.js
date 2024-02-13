@@ -6,7 +6,7 @@ const campgrounds = require("../controllers/campgrounds");
 const Campground = require("../models/campground");
 const {validateCampground, validateReview, requiredLogin, isAuthor, validID} = require("../models/validationSchema")
 const multer  = require('multer'); // configuration to upload images to Cloudinary
-const {storage} = require("../cloudinary/index")
+const {storage, cloudinary} = require("../cloudinary/index")
 const upload = multer({storage}); // upload to 
 
 // read campgrounds
@@ -19,17 +19,16 @@ router.get("/new", requiredLogin, (req, res) => {
     res.render("campgrounds/new.ejs")
 })
 
-// create campground
+// create campground 
 router.post("/", requiredLogin, upload.array('image', 6), validateCampground, catchAsync(async (req, res, next) => {
-    const images = req.files.map(file => ({ // map files data, make a copy with only url & filename 
-        url: file.path,
-        filename: file.filename
-    }))
+    const images = req.files.map(file => { // map uploaded files data, make a copy with only url & filename 
+        return { url: file.path, filename: file.filename }
+    });
     const campground = new Campground(req.body.campground);
     campground.images = images
     campground.author = req.user._id; // automatically adds the campground author based on who is CURRENTLY logged in
     await campground.save();
-    console.log(req.body, req.files, campground)
+    console.log("ADDED: ", campground)
     req.flash("success", "Created new campground!")
     res.redirect(`/campgrounds/${campground._id}`)
 }))
@@ -67,11 +66,22 @@ router.get("/:id/edit", requiredLogin, validID, isAuthor, catchAsync(async (req,
 }))
 
 // update campground
-router.put("/:id", requiredLogin, isAuthor, validateCampground, catchAsync(async (req,res) => {
+router.put("/:id", requiredLogin, isAuthor, upload.array('image', 6), validateCampground, catchAsync(async (req,res) => {
     const {id} = req.params;
-    // the spread operator spreads it into separate object -> req.body.campground.title, req.body.campground.location, req.body.campground.price, etc 
-    const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground}, {runValidators: true})
-    req.flash("success", "Successfully updated campground!")
+    const images = req.files.map(file => { // map uploaded files data, make a copy with only url & filename 
+        return { url: file.path, filename: file.filename }
+    });
+    const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground, $push: {images: images}}, {runValidators: true})
+    
+    if (req.body.deleteImages) {
+        await req.body.deleteImages.forEach(filename => {
+            cloudinary.uploader.destroy(filename)
+        });
+        // removes the image that has filename IN req.body.deleteImages, because deleteImages is an array
+        await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
+    
+    }
+    req.flash("success", "Suc cessfully updated campground!")
     res.redirect(`/campgrounds/${campground._id}`)
 }))
 
