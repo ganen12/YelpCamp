@@ -63,7 +63,10 @@ const storeReturnTo = (req, res, next) => {
 const isAuthor = async (req, res, next) => {
     const {id} = req.params
     const campground = await Campground.findById(id);
-    if (!campground.author._id.equals(req.user._id)) {
+    if (!campground) {
+        return next(new ExpressError("Campground not found! Might have been deleted", 404))
+    }
+    if (!campground.author.equals(req.user._id)) {
         req.flash("error", "NO PERMISSION")
         return res.redirect(`/campgrounds/${id}`)
     }

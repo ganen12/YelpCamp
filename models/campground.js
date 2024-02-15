@@ -3,9 +3,19 @@ const Schema = mongoose.Schema;
 const Review = require("./review")
 const User = require("./user")
 
+const imageSchema = new Schema({
+    url: String, 
+    filename: String
+})
+
+// create a virtual property to display thumbnail version of the image
+imageSchema.virtual("thumbnail").get(function() {
+    return this.url.replace("/upload", "/upload/w_200");
+})
+
 const campgroundSchema = new Schema({
     title: {type: String },
-    images: [ {url: String, filename: String } ],
+    images: [imageSchema],
     price: {type: Number, default: 0},
     description: {type: String, default: " "},
     location: String,

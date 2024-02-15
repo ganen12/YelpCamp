@@ -27,12 +27,12 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="image" class="form-label">Add Image(s)</label>
+                    <label for="image" class="form-label">Add More Image(s)</label>
                     <input class="form-control" type="file" id="image" name="image" value="<% campground.image %>" multiple>
                 </div>
                 <div class="mb-3">
                     <% campground.images.forEach((image, i) => { %>
-                        <img src="<%= image.url %>" class="img-thumbnail" alt="">
+                        <img src="<%= image.thumbnail %>" alt="campground-image">
                         <div class="form-check inline">
                             <!-- for each iteration of images, each filename will be the value of "deleteImages[]", hence the square bracket. Filename refers to the file location in cloudinary -->
                             <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%= image.filename %>"> 

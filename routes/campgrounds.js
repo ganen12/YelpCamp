@@ -4,10 +4,10 @@ const ExpressError = require("../utilities/ExpressError")
 const catchAsync = require("../utilities/catchAsync");
 const campgrounds = require("../controllers/campgrounds");
 const Campground = require("../models/campground");
-const {validateCampground, validateReview, requiredLogin, isAuthor, validID} = require("../models/validationSchema")
+const {validateCampground, requiredLogin, isAuthor, validID} = require("../models/validationSchema")
 const multer  = require('multer'); // configuration to upload images to Cloudinary
 const {storage, cloudinary} = require("../cloudinary/index")
-const upload = multer({storage}); // upload to 
+const upload = multer({storage/*, limits: { fileSize: 100000  bytes  }*/}); // upload to 
 
 // read campgrounds
 router.get("/", catchAsync(async (req, res) => {
@@ -44,18 +44,16 @@ router.get("/:id", validID, catchAsync(async (req, res, next) => {
         .populate({path: "reviews", populate: { path: "author"}})
         .populate("author");
     if (!campground) {
-        // req.flash("error", "Campground not found!")
-        // return res.redirect("/campgrounds");
-        return next(new ExpressError("Campground not found!. Might have been deleted", 404))
+        return next(new ExpressError("Campground not found! Might have been deleted", 404))
     }
     return res.render("campgrounds/details.ejs", {campground, messages: req.flash("success")})
 }))
 
-router.get("/:id/edit", requiredLogin, validID, isAuthor, catchAsync(async (req, res, next) => {
+router.get("/:id/edit", validID, requiredLogin, isAuthor, catchAsync(async (req, res, next) => {
     const {id} = req.params
     const campground = await Campground.findById(id)
     if (!campground) {
-        return next(new ExpressError("Campground not found!. Might have been deleted", 404))
+        return next(new ExpressError("Campground not found! Might have been deleted", 404))
     }
     if (!campground.author.equals(req.user._id)) {
         req.flash("error", "NO PERMISSION")
@@ -79,7 +77,6 @@ router.put("/:id", requiredLogin, isAuthor, upload.array('image', 6), validateCa
         });
         // removes the image that has filename IN req.body.deleteImages, because deleteImages is an array
         await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
-    
     }
     req.flash("success", "Suc cessfully updated campground!")
     res.redirect(`/campgrounds/${campground._id}`)
