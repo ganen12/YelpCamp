@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <% if (campground.images.length) { %>
-                            <img src="<%= campground.images[0].url %>" alt="" class="img-fluid" style="height: fit-content;">
+                            <img crossorigin="anonymous" src="<%= campground.images[0].url %>" alt="" class="img-fluid" style="height: fit-content;">
                         <% } else { %>
                             <img src="" alt="" class="img-fluid" style="height: fit-content;">
                         <% } %>
