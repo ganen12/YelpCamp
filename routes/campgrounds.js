@@ -78,6 +78,7 @@ router.put("/:id", requiredLogin, isAuthor, upload.array('image', 6), validateCa
         // removes the image that has filename IN req.body.deleteImages, because deleteImages is an array
         await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
     }
+    
     req.flash("success", "Suc cessfully updated campground!")
     res.redirect(`/campgrounds/${campground._id}`)
 }))

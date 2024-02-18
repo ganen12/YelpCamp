@@ -5,12 +5,6 @@ const User = require("../models/user");
 const passport = require("passport");
 const { storeReturnTo } = require("../models/validationSchema");
 
-// authentication by Passport, Passport-local, Passport-local-mongoose
-// const authenticate = (req, res, next) => {
-//     passport.authenticate("local", {failureFlash: true, failureRedirect: "/login"})
-//     next()
-// }
-
 router.get("/register", (req, res) => {
     res.render("users/register")
 })

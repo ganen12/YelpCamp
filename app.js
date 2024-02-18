@@ -22,7 +22,7 @@ const campgroundRoutes = require("./routes/campgrounds");
 const userRoutes = require("./routes/users");
 const reviewRoutes = require("./routes/reviews");
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
+const LocalStrategy = require("passport-local"); 
 
 mongoose.connect('mongodb://127.0.0.1:27017/terra-camp')
     .then(() => {
@@ -55,6 +55,7 @@ app.use(session({ // set up session
 
 app.use(passport.initialize());
 app.use(passport.session()); // sessions from Passport
+app.use(mongoSanitize()); // sanitize req.body, req.params, etc
 
 passport.use(new LocalStrategy(User.authenticate())); // this tells passport to use a strategy for authentication and store it as a method in the User Model
 passport.serializeUser(User.serializeUser()); // this makes a static method for User Model to store data in session 
@@ -83,6 +84,9 @@ app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds", reviewRoutes); 
 app.use(userRoutes);
 
+app.get("/", (req, res) => {
+    res.render("home.ejs")
+})
 
 app.all("*", (req, res, next) => {
     throw new ExpressError("Page Not Found!", 404);
@@ -96,3 +100,4 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log("LISTENING ON PORT 3000")
 })
+

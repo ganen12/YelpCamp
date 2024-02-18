@@ -7,7 +7,11 @@
             <div class="card mb-4" onclick="location.href='/campgrounds/<%= campground._id %>';" style="cursor: pointer;">
                 <div class="row">
                     <div class="col-md-4">
-                        <img src="<%= campground.images[0].url %>" alt="" class="img-fluid" style="height: fit-content;">
+                        <% if (campground.images.length) { %>
+                            <img src="<%= campground.images[0].url %>" alt="" class="img-fluid" style="height: fit-content;">
+                        <% } else { %>
+                            <img src="" alt="" class="img-fluid" style="height: fit-content;">
+                        <% } %>
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
