@@ -1,27 +1,60 @@
 <% layout("layouts/boilerplate") %>
-    
+
+    <link rel="stylesheet" href="/stylesheets/search.css">
+
+    <div class="row mb-5">
+        <div class="col-md-6 mx-auto">
+                <!-- Custom rounded search bars with input group -->
+                <form action="/campgrounds">
+                    <div class="p-2 bg-light rounded rounded-pill shadow-sm mb-4 border focus-ring-none focus-ring-white">
+                         <div class="input-group">
+                                <input type="search" placeholder="Search Campground" name="q" aria-describedby="button-addon1" value="<%= q %>" class="form-control border-0 bg-light">
+                                <div class="input-group-append">
+                                    <button id="button-addon1" type="submit" class="btn btn-search text-black shadow-none" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                      </svg></button>
+                                </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- End -->
+            </div>
+        </div>
     <div>
         <h1 class="mb-4">All Campgrounds</h1>
     </div>
-        <% allCampgrounds.forEach(campground => { %>
-            <div class="card mb-4" onclick="location.href='/campgrounds/<%= campground._id %>';" style="cursor: pointer;">
-                <div class="row">
-                    <div class="col-md-4">
-                        <% if (campground.images.length) { %>
-                            <img crossorigin="anonymous" src="<%= campground.images[0].url %>" alt="" class="img-fluid" style="height: fit-content;">
-                        <% } else { %>
-                            <img src="" alt="" class="img-fluid" style="height: fit-content;">
-                        <% } %>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="class-title"><%= campground.title %></h5>
-                            <p class="card-text"><%= campground.description %></p>
-                            <p class="card-text"><small class="text-secondary"><%= campground.location %></small></p>
-                            <a href="/campgrounds/<%= campground._id %>" class="btn btn-warning">View Campground</a>
+        <% if (allCampgrounds.length) { %>
+            <% allCampgrounds.forEach(campground => { %>
+                <div class="card mb-4" onclick="location.href='/campgrounds/<%= campground._id %>';" style="cursor: pointer;">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <% if (campground.images.length) { %>
+                                <img crossorigin="anonymous" src="<%= campground.images[0].url %>" alt="" class="img-fluid" style="height: fit-content;">
+                            <% } else { %>
+                                <img src="" alt="" class="img-fluid" style="height: fit-content;">
+                            <% } %>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="class-title"><%= campground.title %></h5>
+                                <p class="card-text"><%= campground.description %></p>
+                                <p class="card-text"><small class="text-secondary"><%= campground.location %></small></p>
+                                <a href="/campgrounds/<%= campground._id %>" class="btn btn-warning">View Campground</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+            <% }); %>
+        <% } else { %>
+            <div class="mt-5">
+                <h5>Sorry! No result found</h5>
             </div>
-        <% }); %>
+        <% } %>
    
+
+<script>
+    document.querySelector("#button-addon1").addEventListener("submit", function(e) {
+        if (!document.querySelector("#button-addon1").value) {
+            e.preventDefault();
+        }})
+</script>

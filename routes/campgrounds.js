@@ -8,12 +8,26 @@ const {validateCampground, requiredLogin, isAuthor, validID} = require("../model
 const multer  = require('multer'); // configuration to upload images to Cloudinary
 const {storage, cloudinary} = require("../cloudinary/index")
 const upload = multer({storage/*, limits: { fileSize: 100000  bytes  }*/}); // upload to 
+const sanitizeHtml = require('sanitize-html');
 
 // read campgrounds
 router.get("/", catchAsync(async (req, res) => {
-    const allCampgrounds = await Campground.find({})
-    res.render("campgrounds/index.ejs", {allCampgrounds})
-}))
+    const { q } = req.query;
+    // Allow only a super restricted set of tags and attributes
+    const clean = sanitizeHtml(q, {
+    allowedTags: [ 'b', 'i', 'em', 'strong' ],
+    allowedAttributes: {}});
+    console.log("q: ", q)
+    console.log("clean: ", clean)
+    let allCampgrounds;
+    if (clean) {
+        allCampgrounds = await Campground.find({title: {$regex: clean.trim(), $options:'i'}})
+    } else {
+        allCampgrounds = await Campground.find({})
+    }
+    
+    res.render("campgrounds/index.ejs", {allCampgrounds, q})
+}));
 
 router.get("/new", requiredLogin, (req, res) => {
     res.render("campgrounds/new.ejs")

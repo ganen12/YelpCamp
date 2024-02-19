@@ -77,6 +77,7 @@ app.use((req, res, next) => {
     if (res.locals.origin === "/") { // if signed up from homepage
         res.locals.origin = "/campgrounds"
     }
+    
     if (res.locals.origin === "/login" || res.locals.origin === "/register") { 
         res.locals.origin = req.query.origin;
     }
