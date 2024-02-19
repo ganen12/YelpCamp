@@ -2,9 +2,8 @@
 <!-- <h5><%=// messages %></h5> -->
 <link rel="stylesheet" href="/stylesheets/stars.css">
 
-<div class="mb-3">
-    
-    <p class="mb-2">Campgrounds/</p>
+<div class="mb-3 mt-5">
+    <p class="mb-2 fw-medium">Campgrounds/<%= campground.title %></p>
     <a class=" btn btn-outline-warning" href="/campgrounds"><span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
       </svg></span></a>
@@ -129,7 +128,7 @@
         .setPopup(
             new mapboxgl.Popup({ offset: 25 })
                 .setHTML(
-                    `<h3>${campground.title}</h3><p>${campground.location}</p>`
+                    `<h3>${campground.title}</h3>${campground.location}`
                 )
         )
         .addTo(map)

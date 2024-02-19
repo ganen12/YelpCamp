@@ -22,7 +22,7 @@ const rand = (max) => {
 const seedDB = async () => {
     try {
         await Campground.deleteMany({});
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 499; i++) {
             const rand500 = rand(500);
             await Campground.create({
                 location: `${cities[rand500].city}, ${cities[rand500].state}`,
@@ -30,7 +30,7 @@ const seedDB = async () => {
                 price: `${rand(20) + 10}`,
                 geometry: {
                     type: "Point",
-                    coordinates: [120.576461, -25.033974]
+                    coordinates: [cities[rand500].longitude, cities[rand500].latitude]
                 },
                 images: [
                     {

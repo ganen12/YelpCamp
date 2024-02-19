@@ -24,9 +24,9 @@ router.get("/", catchAsync(async (req, res) => {
     console.log("clean: ", clean)
     let allCampgrounds;
     if (clean) {
-        allCampgrounds = await Campground.find({title: {$regex: clean.trim(), $options:'i'}})
+        allCampgrounds = await Campground.find({title: {$regex: clean.trim(), $options:'i'}});
     } else {
-        allCampgrounds = await Campground.find({})
+        allCampgrounds = await Campground.find({});
     }
     
     res.render("campgrounds/index.ejs", {allCampgrounds, q})
