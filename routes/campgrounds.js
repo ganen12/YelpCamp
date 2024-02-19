@@ -11,7 +11,7 @@ const upload = multer({storage/*, limits: { fileSize: 100000  bytes  }*/}); // u
 const sanitizeHtml = require('sanitize-html');
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const mapBoxToken = process.env.MAPBOX_TOKEN;
-const geocoder = mbxGeocoding({accessToken: mapBoxToken})
+const geocoder = mbxGeocoding({accessToken: mapBoxToken});
 
 // read campgrounds
 router.get("/", catchAsync(async (req, res) => {
@@ -42,6 +42,7 @@ router.post("/", requiredLogin, upload.array('image', 6), validateCampground, ca
         query: req.body.campground.location,
         limit: 1
     }).send()
+    console.log(geoData.body.features[0].geometry)
     const images = req.files.map(file => { // map uploaded files data, make a copy with only url & filename 
         return { url: file.path, filename: file.filename }
     });

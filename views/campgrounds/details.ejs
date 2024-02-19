@@ -1,6 +1,7 @@
 <% layout("layouts/boilerplate") %>
 <!-- <h5><%=// messages %></h5> -->
 <link rel="stylesheet" href="/stylesheets/stars.css">
+
 <div class="mb-3">
     
     <p class="mb-2">Campgrounds/</p>
@@ -8,7 +9,7 @@
         <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
       </svg></span></a>
 </div>
-
+<div class="mb-5" id='map' style='width: 100%; height: 300px;'></div>
 <div class="mb-5 justify-content-between row">    
     <!--<div class="row border">-->
         <div class="col-lg-6 card" style="height: min-content;">
@@ -55,7 +56,8 @@
             <% } %>
             
         </div> 
-        <div id='map' style='width: 100%; height: 300px;'></div>
+        
+        
 
         <div class="col-lg-6 review">
             <h2>Leave a Review</h2>
@@ -111,8 +113,28 @@
 </div>
 
 <script>
-    const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
-    const campground = <%- JSON.stringify(campground) %>;
+    const mapToken = "<%- process.env.MAPBOX_TOKEN%>"; // make it a string
+    const campground = <%-JSON.stringify(campground)%>;
+
+    mapboxgl.accessToken = mapToken;
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v10', // stylesheet location
+        center: campground.geometry.coordinates, // starting position [lng, lat]
+        zoom: 10 // starting zoom
+    });
+
+    new mapboxgl.Marker()
+        .setLngLat(campground.geometry.coordinates)
+        .setPopup(
+            new mapboxgl.Popup({ offset: 25 })
+                .setHTML(
+                    `<h3>${campground.title}</h3><p>${campground.location}</p>`
+                )
+        )
+        .addTo(map)
 </script>
 
-<script src="/javascripts/showPageMap.js"></script>
+<!-- <script src="/javascripts/showPageMap.js"></script> -->
+
+
