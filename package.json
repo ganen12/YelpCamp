@@ -9,6 +9,7 @@
   "author": "Gan",
   "license": "ISC",
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.15.3",
     "bootstrap-icons": "^1.11.3",
     "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",

@@ -9,6 +9,9 @@ const multer  = require('multer'); // configuration to upload images to Cloudina
 const {storage, cloudinary} = require("../cloudinary/index")
 const upload = multer({storage/*, limits: { fileSize: 100000  bytes  }*/}); // upload to 
 const sanitizeHtml = require('sanitize-html');
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({accessToken: mapBoxToken})
 
 // read campgrounds
 router.get("/", catchAsync(async (req, res) => {
@@ -35,10 +38,15 @@ router.get("/new", requiredLogin, (req, res) => {
 
 // create campground 
 router.post("/", requiredLogin, upload.array('image', 6), validateCampground, catchAsync(async (req, res, next) => {
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+    }).send()
     const images = req.files.map(file => { // map uploaded files data, make a copy with only url & filename 
         return { url: file.path, filename: file.filename }
     });
     const campground = new Campground(req.body.campground);
+    campground.geometry = geoData.body.features[0].geometry;
     campground.images = images
     campground.author = req.user._id; // automatically adds the campground author based on who is CURRENTLY logged in
     await campground.save();
