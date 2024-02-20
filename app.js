@@ -81,7 +81,7 @@ app.use((req, res, next) => {
     if (res.locals.origin === "/login" || res.locals.origin === "/register") { 
         res.locals.origin = req.query.origin;
     }
-
+    console.log(req.user)
     res.locals.currentUser = req.user; // Passport property to store/check the user session data 
     res.locals.success = req.flash("success"); // the success message is stored in res.locals.success
     res.locals.error = req.flash("error");
