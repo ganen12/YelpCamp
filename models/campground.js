@@ -13,9 +13,22 @@ imageSchema.virtual("thumbnail").get(function() {
     return this.url.replace("/upload", "/upload/w_200");
 })
 
+// const opts = { toJSON: { virtuals: true } };
+
 const campgroundSchema = new Schema({
     title: {type: String },
     images: [imageSchema],
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [ Number ],
+            required: true
+        }
+    },
     price: {type: Number, default: 0},
     description: {type: String, default: " "},
     location: String,
@@ -29,6 +42,11 @@ const campgroundSchema = new Schema({
             ref: "Review"
         }
     ]
+}, {opts: { toJSON: { virtuals: true } }, strictPopulate: false});
+
+// virtual property to access popUpMarkup, the campground details text that will be shown when map is clicked
+campgroundSchema.virtual('properties.popUpMarkup').get(function () {
+    return `<strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>`;
 });
 
 // deletion middleware. Attached to the model

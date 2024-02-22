@@ -1,24 +1,38 @@
 <% layout("layouts/boilerplate") %>
 
-<h1>Sign In</h1>
 
-<form action="/login?origin=<%= origin %>" method="post" novalidate class="validated-form">
-    <div class="mb-3">
-        <label class="form-label" for="username">Username</label>
-        <input class="form-control" type="text" id="username" name="username" required>
-        <div class="invalid-feedback">
-            Include username.
+<div class="container d-flex justify-content-center align-items-center mt-5" >
+    <div class="row justify-content-center align-items-center w-100">
+        <div class="col-11 col-md-5">
+            <div class="card shadow">
+                <img src="https://images.unsplash.com/photo-1533575770077-052fa2c609fc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-4">Login</h5>
+                    <form action="/login?origin=<%= origin || "/campgrounds" %>" method="post" novalidate class="validated-form">
+                        <div class="mb-3">
+                            <label class="form-label" for="username">Username</label>
+                            <input class="form-control" type="text" id="username" name="username" autofocus required>
+                            <div class="invalid-feedback">
+                                Include username.
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label" for="password">Password</label>
+                            <input class="form-control" type="password" id="password" name="password" required>
+                            <div class="invalid-feedback">
+                                Include a valid password.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-grid gap-2">
+                                 <button type="submit" class="btn btn-warning btn-block">Log In</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label" for="password">Password</label>
-        <input class="form-control" type="password" id="password" name="password" required>
-        <div class="invalid-feedback">
-            Include a valid password.
-        </div>
-    </div>
-    
-    <div class="mb-3">
-        <button type="submit" class="btn btn-warning">Sign In</button>
-    </div>
-</form>
+</div>
+

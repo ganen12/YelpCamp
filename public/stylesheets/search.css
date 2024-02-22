@@ -1,0 +1,13 @@
+
+.btn-search, .btn-search:active, .btn-search:hover, .btn-search:focus, .btn-search:visited {
+    outline: none;
+    border: none;
+    background-color: none;
+}
+
+/* .btn-outline {
+    outline: none;
+    border: none;
+    background-color: none;
+    color: none;
+} */

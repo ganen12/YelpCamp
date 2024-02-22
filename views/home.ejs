@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YelpCamp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="/stylesheets/home.css">
+</head>
+<body crossorigin="anonymous" class="d-flex bg-dark flex-column text-white text-center">
+    <div class="cover-container vh-100 d-flex w-100 mx-auto text-center flex-column">
+        <nav class="w-100 navbar sticky-top navbar-expand-lg px-3" data-bs-theme="dark">
+            <div class="container-fluid sticky-top">
+                <a class="navbar-brand" href="#">YelpCamp</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between ps-3" id="navbarNav" >
+                    <div class="navbar-nav">
+                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="/campgrounds">Campgrounds</a>
+                    </div>
+                    <div class="navbar-nav float-right">
+                        <% if (!currentUser) { %>
+                            <a class="nav-link" href="/login?origin=<%= origin %>">Login</a>
+                            <a class="nav-link" href="/register?origin=<%= origin %>">Sign Up</a>
+                        <% } else {%>
+                            <a class="nav-link" href="/logout">Logout</a>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="px-5 my-auto header-content text-center">
+            <h1 class="mb-3">Explore the Great Outdoors on YelpCamp</h1>
+            <p class="lead fw-lighter w-75 mx-auto mb-5"> Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, nostrum, natus atque molestias vel perspiciatis veniam, hic earum minus eaque accusamus esse ab et enim voluptatum vero ipsum saepe labore?
+
+            </p>
+            <a href="/campgrounds" class="btn btn-lg btn-secondary btn-light rounded rounded-pill">View Campgrounds</a>
+        </main>
+
+        <footer class="footer py-4">
+            <div class="text-white">
+                <span class="text-secondary">&copy;YelpCamp 2024</span>
+            </div>
+        </footer>
+    </div>
+    
+
+
+    <script>
+    document.querySelectorAll(".nav-link").forEach((link) => {
+        if (link.href === window.location.href) {
+            link.style.color = "white";
+        }
+    });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+</body>
+</html> 

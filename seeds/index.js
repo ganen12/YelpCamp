@@ -22,12 +22,16 @@ const rand = (max) => {
 const seedDB = async () => {
     try {
         await Campground.deleteMany({});
-        for (let i = 0; i < 50; i++) {
-            const rand500 = rand(500);
+        for (let i = 0; i < 999; i++) {
+            const rand500 = rand(700);
             await Campground.create({
                 location: `${cities[rand500].city}, ${cities[rand500].state}`,
                 title: `${descriptors[rand(descriptors.length)]} ${places[rand(places.length)]}`,
                 price: `${rand(20) + 10}`,
+                geometry: {
+                    type: "Point",
+                    coordinates: [cities[rand500].longitude, cities[rand500].latitude]
+                },
                 images: [
                     {
                       url: 'https://res.cloudinary.com/dsdbdy97a/image/upload/v1707581407/YelpCamp/qh1ielvxmavdtxr7fxpa.jpg',

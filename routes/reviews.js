@@ -2,35 +2,16 @@ const express = require("express");
 const router = express.Router({mergeParams: true}); // merge params so that every type of params like variable is included
 const ExpressError = require("../utilities/ExpressError")
 const catchAsync = require("../utilities/catchAsync");
-const Campground = require("../models/campground");
-const {validateCampground, validateReview, requiredLogin, isReviewAuthor} = require("../models/validationSchema")
-const Review = require("../models/review");
+const reviews = require("../controllers/reviews");
+const {validateReview, requiredLogin, isReviewAuthor} = require("../models/validationSchema")
 
-router.get("/:campID/reviews", (req, res) => {
-    const {campID} = req.params;
-    res.redirect(`/campgrounds/${campID}`)
-})
+
+router.get("/:campID/reviews", reviews.renderIndex)
 
 // delete a campground review
-router.delete("/:campID/reviews/:revID", requiredLogin, isReviewAuthor, catchAsync(async (req, res ) => {
-    const {campID, revID} = req.params;
-    // this removes the id reference in campground.reviews first, and then delete the review from the separated collection
-    const campground = await Campground.findByIdAndUpdate(campID, {$pull: {reviews: revID}}) // deletes the reviews._id reference
-    const review = await Review.findByIdAndDelete(revID)
-    console.log(`DELETED, ${review}, from: ${campground.reviews}`)
-    res.redirect(`/campgrounds/${campground._id}`)
-}))
+router.delete("/:campID/reviews/:revID", requiredLogin, isReviewAuthor, catchAsync(reviews.deleteReview))
 
 // create a campground review
-router.post("/:campID/reviews/", requiredLogin, validateReview, catchAsync(async (req, res) => { 
-    const {campID} = req.params;
-    const campground = await Campground.findById(campID)
-    const review = new Review(req.body.review)
-    review.author = req.user._id
-    campground.reviews.push(review)
-    await review.save()
-    await campground.save()
-    res.redirect(`/campgrounds/${campground._id}`)
-}))
+router.post("/:campID/reviews/", requiredLogin, validateReview, catchAsync(reviews.createReview))
 
 module.exports = router;

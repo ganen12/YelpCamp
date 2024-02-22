@@ -1,5 +1,5 @@
 if (process.env.NODE_ENV !== "production") {
-    require("dotenv").config();
+    require("dotenv").config(); // contains system variables depending on the environment. ex: API key, pass, name.
 }
 console.log(process.env.CLOUDINARY_KEY)
 
@@ -22,7 +22,9 @@ const campgroundRoutes = require("./routes/campgrounds");
 const userRoutes = require("./routes/users");
 const reviewRoutes = require("./routes/reviews");
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
+const LocalStrategy = require("passport-local"); 
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require("helmet");
 
 mongoose.connect('mongodb://127.0.0.1:27017/terra-camp')
     .then(() => {
@@ -43,11 +45,13 @@ app.use(methodOverride("_method"));
 app.use(flash())
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({ // set up session 
+    name: "chocolatecookie", 
     secret: "thisismysecret",
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
+        // secureL: true,
         expires: Date.now() + 1000 * 60 * 60* 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -55,6 +59,11 @@ app.use(session({ // set up session
 
 app.use(passport.initialize());
 app.use(passport.session()); // sessions from Passport
+app.use(mongoSanitize()); // sanitize req.body, req.params, etc.
+
+// Content-Security-Policy header allows you to restrict which resources (JS, CSS, Images, etc.) can be loaded,
+// and the URLs that they can be loaded from.
+app.use(helmet({ contentSecurityPolicy: false })); // TODO: set true, then configure the content policy
 
 passport.use(new LocalStrategy(User.authenticate())); // this tells passport to use a strategy for authentication and store it as a method in the User Model
 passport.serializeUser(User.serializeUser()); // this makes a static method for User Model to store data in session 
@@ -63,15 +72,16 @@ passport.deserializeUser(User.deserializeUser()); // this makes a static method 
 // global variables available to all
 app.use((req, res, next) => {        
     
-    // this is confusing but at least it works
+    // redirecting from login/signup
     res.locals.origin = req.path;
     if (res.locals.origin === "/") { // if signed up from homepage
         res.locals.origin = "/campgrounds"
     }
+    
     if (res.locals.origin === "/login" || res.locals.origin === "/register") { 
         res.locals.origin = req.query.origin;
     }
-
+    console.log(req.user)
     res.locals.currentUser = req.user; // Passport property to store/check the user session data 
     res.locals.success = req.flash("success"); // the success message is stored in res.locals.success
     res.locals.error = req.flash("error");
@@ -83,6 +93,9 @@ app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds", reviewRoutes); 
 app.use(userRoutes);
 
+app.get("/", (req, res) => {
+    res.render("home.ejs")
+})
 
 app.all("*", (req, res, next) => {
     throw new ExpressError("Page Not Found!", 404);
@@ -96,3 +109,4 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log("LISTENING ON PORT 3000")
 })
+
